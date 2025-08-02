@@ -12,7 +12,7 @@ function App() {
     <div className="container">
       <h1>📋 Minhas Tarefas</h1>
       <TaskForm onNovaTarefa={atualizarLista} />
-      <TaskList key={atualizar} />
+      <TaskList atualizar={atualizar} />
     </div>
   );
 }

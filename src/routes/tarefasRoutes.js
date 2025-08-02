@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const Tarefa = require("../models/tarefa")
+import Tarefa from '../models/tarefa.js'
+import { deletarTarefa} from '../controllers/tarefaController.js';
 
 router.get("/", async (req, res) => {
     const tarefas = await Tarefa.find();
@@ -26,5 +27,6 @@ router.post("/", async (req, res) => {
     }
 });
 
+router.delete("/:id", deletarTarefa);
 
 module.exports = router;

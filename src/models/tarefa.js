@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const tarefaSchema = new mongoose.Schema ({
     titulo: { type: String, required: true },
@@ -9,4 +9,4 @@ const tarefaSchema = new mongoose.Schema ({
 
 const Tarefa = mongoose.model("Tarefa", tarefaSchema);
 
-module.exports = Tarefa;
+export default Tarefa; 
