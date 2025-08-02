@@ -29,4 +29,4 @@ router.post("/", async (req, res) => {
 
 router.delete("/:id", deletarTarefa);
 
-module.exports = router;
+export default router;

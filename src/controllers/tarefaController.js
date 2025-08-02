@@ -1,4 +1,4 @@
-import { Tarefa } from '../models/tarefa.js'; 
+import Tarefa from '../models/tarefa.js'; 
 
 export async function deletarTarefa(req, res) {
   try {
