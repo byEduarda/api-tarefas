@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const tarefasRoutes = require("./src/routes/tarefasRoutes");
+const connectToMongo = require("./src/config/mongoConnect");
 
+connectToMongo();
 const app = express();
 
 app.use(cors());
@@ -15,5 +17,5 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor rodando na porta ${PORT}`)
+    console.log(`🚀 Servidor rodando na porta: ${PORT}`)
 });
