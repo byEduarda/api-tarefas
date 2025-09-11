@@ -9,6 +9,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      TF_VAR_gcp_credentials: terraform/gcp-key.json
+      TF_VAR_project_id: ${{ secrets.GCP_ID_KEY }}
+      TF_VAR_region: us-central1
+      TF_VAR_vm_name: api-tarefas-vm
+      TF_VAR_docker_image: mariaeduardazx/api-tarefas:latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -16,29 +23,28 @@ jobs:
       - name: Configurar autenticação GCP
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_JSON_KEY_}}
+          credentials_json: ${{ secrets.GCP_JSON_KEY }}
 
       - name: Setup gcloud CLI
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ secrets.GCP_ID_KEY_}}
+          project_id: ${{ secrets.GCP_ID_KEY }}
 
       - name: Build e Push Docker
         run: |
           IMAGE="mariaeduardazx/api-tarefas:latest"
-          docker build -t $IMAGE ./app
-          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          docker build -t $IMAGE .
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
           docker push $IMAGE
 
-      - name: Terraform Init
+      - name: Criar arquivo de credenciais
         run: |
-          cd terraform
-          terraform init
+          echo '${{ secrets.GCP_JSON_KEY }}' > terraform/gcp-key.json
+
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init
 
       - name: Terraform Apply
-        run: |
-          cd terraform
-          terraform apply -auto-approve \
-            -var="gcp_credentials=/home/runner/gcp-key.json" \
-            -var="project_id=${{ secrets.GCP_ID_KEY_}}" \
-            -var="region=us-central1"
+        working-directory: terraform
+        run: terraform apply -auto-approve

@@ -1,10 +1,10 @@
 variable "gcp_credentials" {
-  description = "Caminho para as credenciais do GCP"
+  description = "Caminho para o arquivo JSON de credenciais do GCP"
   type        = string
 }
 
 variable "project_id" {
-  description = "ID do projeto GCP"
+  description = "ID do projeto no GCP"
   type        = string
 }
 
@@ -15,7 +15,13 @@ variable "region" {
 }
 
 variable "vm_name" {
-  description = "Nome da VM para rodar a API"
+  description = "Nome da máquina virtual"
   type        = string
   default     = "api-tarefas-vm"
+}
+
+variable "docker_image" {
+  description = "Imagem Docker da API"
+  type        = string
+  default     = "mariaeduardazx/api-tarefas:latest"
 }
