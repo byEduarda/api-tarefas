@@ -1,0 +1,44 @@
+name: Deploy API Terraform + Docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configurar autenticação GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_JSON_KEY_}}
+
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_ID_KEY_}}
+
+      - name: Build e Push Docker
+        run: |
+          IMAGE="mariaeduardazx/api-tarefas:latest"
+          docker build -t $IMAGE ./app
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          docker push $IMAGE
+
+      - name: Terraform Init
+        run: |
+          cd terraform
+          terraform init
+
+      - name: Terraform Apply
+        run: |
+          cd terraform
+          terraform apply -auto-approve \
+            -var="gcp_credentials=/home/runner/gcp-key.json" \
+            -var="project_id=${{ secrets.GCP_ID_KEY_}}" \
+            -var="region=us-central1"
